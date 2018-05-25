@@ -1,13 +1,13 @@
 .PHONY: all build push
 
+$(eval VERSION ?= 1.0.0)
 GW=./gradlew
 AWS_REGION=us-west-2
-AWS_BLITZ_CLI=${DOCKER_REGISTRY}/cps/docker-aws-cli:latest
-AWS_ECR_URL=248240523246.dkr.ecr.us-west-2.amazonaws.com/hello-world:${USER}-1
+AWS_ECR_URL=248240523246.dkr.ecr.${AWS_REGION}.amazonaws.com/hello-world:${USER}-${VERSION}
 
 build:
 	$(GW) oneJar
-	docker build -t hello-world:1.0.0 .
+	docker build -t hello-world:${VERSION} .
 
 
 dockerAWSLogin:
@@ -16,5 +16,5 @@ dockerAWSLogin:
 	${AWS_LOGIN}
 
 push: dockerAWSLogin
-	docker tag hello-world:1.0.0 ${AWS_ECR_URL}
+	docker tag hello-world:${VERSION} ${AWS_ECR_URL}
 	docker push ${AWS_ECR_URL}
